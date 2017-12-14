@@ -11,8 +11,6 @@ type: page
 
 ## 关于我
 
-<iframe src="https://githubbadge.appspot.com/gaohaoyang?s=1" style="border: 0;height: 142px;width: 200px;overflow: hidden;" frameBorder="0"></iframe>
-
 就职于广州中国科学院计算机网络信息技术中心车联网实验室，技术经理。
 
 主要兴趣集中在后端高性能高可用平台开发，java & linux。
