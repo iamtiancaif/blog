@@ -7,7 +7,7 @@
 
 # Site settings
 title: Ji Xiani Zhao
-brief-intro: Front-end Dev Engineer
+brief-intro: Back-end Dev Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jixianzhao.github.io" # the base hostname & protocol for your site
 

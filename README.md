@@ -178,7 +178,7 @@ Shows at site header part.
 ```yml
 # Site settings
 title: Ji Xiani Zhao
-brief-intro: Front-end Dev Engineer
+brief-intro: Back-end Dev Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://jixianzhao.github.io" # the base hostname & protocol for your site
 ```
