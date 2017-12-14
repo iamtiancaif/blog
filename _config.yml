@@ -14,13 +14,14 @@ url: "https://jixianzhao.github.io" # the base hostname & protocol for your site
 permalink: /:year/:month/:day/:title/
 
 # other links
-twitter_username: jixianzhao126
-facebook_username: jixianzhao.water
+twitter_username: joseph__kei
+# facebook_username: jixianzhao.water
 github_username:  jixianzhao
-email: jixianzhao126@126.com
-weibo_username: 3115521wh
-zhihu_username: jixianzhao
-linkedIn_username: jixianzhao
+email: iamtiancaif@qq.com
+email: iamtiancaif@gmail.com
+# weibo_username: 3115521wh
+# zhihu_username: jixianzhao
+# linkedIn_username: jixianzhao
 dribbble_username:
 
 description_footer: 本站记录我后端之旅的沿途风景！
