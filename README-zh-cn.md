@@ -177,7 +177,7 @@ gem install jekyll
 
 ```yml
 # Site settings
-title: HyG
+title: Ji Xiani Zhao
 brief-intro: Front-end Dev Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://jixianzhao.github.io" # the base hostname & protocol for your site
@@ -193,7 +193,7 @@ twitter_username: joseph__kei
 # facebook_username: jixianzhao.water
 github_username:  jixianzhao
 email: iamtiancaif@qq.com
-email: iamtiancaif@gmail.com
+email2: iamtiancaif@gmail.com
 # weibo_username: 3115521wh
 zhihu_username: joseph_kei
 # linkedIn_username: jixianzhao
