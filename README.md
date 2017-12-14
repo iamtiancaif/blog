@@ -21,7 +21,6 @@ With the escalation of jekyll version, but I also want to reconstruct my older b
     * [Categories](#categories)
     * [Tags](#tags)
     * [Collections](#collections)
-    * [Demo](#demo)
     * [About](#about)
     * [Comments](#comments)
     * [Post Contents](#post-contents)
@@ -76,10 +75,6 @@ Show posts according to the tags.
 ### Collections
 
 The user can collect their favorite article links with `markdown` syntax.
-
-### Demo
-
-I use *[Masonry](http://masonry.desandro.com/)* to rewrite the waterfall responsive layout. Better interactive experience.
 
 ### About
 
