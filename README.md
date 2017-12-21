@@ -194,7 +194,7 @@ zhihu_username: joseph_kei
 # linkedIn_username: jixianzhao
 dribbble_username:
 
-description_footer: 本站记录我后端之旅的沿途风景！
+description_footer: travel throught the codes with me. 
 ```
 
 #### Comments info
