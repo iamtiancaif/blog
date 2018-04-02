@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "TCP: About FIN_WAIT_2, TIME_WAIT and CLOSE_WAIT"
-categories: computer java
-tags:  computer os java copy tcp
+categories: computer 
+tags:  computer os copy tcp
 author: web
 source: https://benohead.com/tcp-about-fin_wait_2-time_wait-and-close_wait/
 ---

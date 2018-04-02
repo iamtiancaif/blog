@@ -2,7 +2,7 @@
 layout: post
 title:  "vim make 'fenc' empty to override"
 categories: computer
-tags:  computer os ruby jekyll copy
+tags:  computer os vim copy
 author: web 
 source: http://www.hachim.jp/study-by-incident/file-encode.html
 ---
