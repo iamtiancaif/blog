@@ -11,7 +11,7 @@ brief-intro: Back-end Dev Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://jixianzhao.github.io" # the base hostname & protocol for your site
 
-permalink: /:year/:month/:day/:title/
+permalink: :year-:month-:day-:title
 
 # other links
 twitter_username: joseph__kei
@@ -61,5 +61,3 @@ gems: [jekyll-paginate]
 paginate: 6
 
 
-plugins:
-        - jekyll-sitemap
