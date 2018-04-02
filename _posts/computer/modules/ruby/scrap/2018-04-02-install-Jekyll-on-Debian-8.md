@@ -19,7 +19,7 @@ To install Jekyll you need to log in to your virtual server via SSH. Once you ar
 
 Next, you need to install Ruby on your[ Debian VPS](https://www.rosehosting.com/debian-vps.html). This is because Jekyll is written in Ruby and it is a major requirement. Go ahead an install Ruby by executing the following command:
 
-sudo apt-get install ruby-full build-essential 
+	sudo apt-get install ruby-full build-essential 
 
 This will take a few moments. After the process is completed, you can verify that Ruby is successfully installed by using the following command:
 
@@ -28,6 +28,7 @@ This will take a few moments. After the process is completed, you can verify tha
 You should get something like this:
 
 ruby 2.1.5p273 (2014-11-13) \[x86_64-linux-gnu\]
+<!--more-->
 
 Jekyll 2 requires Ruby v1.9.3 or above and Jekyll 3 requires Ruby v2 or above. As you can see in the previous output, our version is 2.1.5p273, which means we are good to go.
 
@@ -43,7 +44,6 @@ The output of the command should be similar to this one:
 
 jekyll 3.0.0
 
-<!--more-->
 
 This means, Jekyll 3.0.0 is installed on our system.  
 Now, lets create a test project using Jekyll and access the project using a web browser. Navigate to your ‘/home’ directory:

@@ -20,6 +20,7 @@ The `>>>` operator is the [unsigned right bit-shift operator in Java](http://
 
 The difference between `>>` and `>>>` would only show up when shifting negative numbers. The `>>` operator shifts a `1` bit into the most significant bit if it was a `1`, and the `>>>` shifts in a `0`regardless.
 
+<!--more-->
 **UPDATE:**
 
 Let's average `1` and `2147483647` (`Integer.MAX_VALUE`). We can do the math easily:
@@ -46,9 +47,6 @@ Let's make the "shift" to `>>>`:
     ================================================
     +1073741824: 01000000 00000000 00000000 00000000  // Unsigned shift right.
 
-  
-<!--more-->
-  
 
 Bitwise and Bit Shift Operators
 ===============================

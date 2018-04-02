@@ -84,7 +84,9 @@ layout: default
                     </div>
                 </div>
                 <div class="excerpt">
-                    {{post.excerpt}}
+			{% assign note=post.excerpt | replace: '<h1', '<strong' | replace: '<h2', '<strong' | replace: '<h3', '<strong' %}
+			{% assign note=note | replace: '</h1>', '</strong>' | replace: '</h2>', '</strong>' | replace: '</h3>', '</strong>' %}
+			{{ note }}
                 </div>
 		{% capture pureContent %}{{ post.content.size | minus: 12 }}{% endcapture %}
 		{% assign pureContent = pureContent | plus:0 %}
@@ -93,7 +95,7 @@ layout: default
 			<br />
 			<br />
 			<div class="read-all">
-			    <a  href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>Read All</a>
+			    <a  target="_blank" href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>Read All</a>
 			</div>
 		{% endif %}
                 <hr>

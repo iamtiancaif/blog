@@ -30,6 +30,7 @@ Most of the 11 TCP states are pretty easy to understand and most programmers kno
 *   CLOSING: The local end-point is waiting for an acknowledgement for a connection termination request before going to the TIME-WAIT state.
 *   TIME-WAIT: The local end-point waits for twice the maximum segment lifetime (MSL) to pass before going to CLOSED to be sure that the remote end-point received the acknowledgement.
 
+<!--more-->
 Most people working with high-level programming languages actually only really know the states CLOSED, LISTEN and ESTABLISHED. Using netstat the chances are that you will not see connections in the SYN\_SENT, SYN\_RECV, FIN\_WAIT\_1, LAST_ACK or CLOSING states. A TCP end-point usually stays in these states for only a very short period of time and if many connections get stuck for a longer time in these states, something really bad happened.
 
 FIN\_WAIT\_2, TIME\_WAIT and CLOSE\_WAIT are more common. They are all related to the connection termination four-way handshake. Here is a short overview of the states involved:
@@ -40,7 +41,6 @@ The upper part shows the states on the end-point initiating the termination. The
 
 So the initiating end-point (i.e. the client) sends a termination request to the server and waits for an acknowledgement in state FIN-WAIT-1. The server sends an acknowledgement and goes in state CLOSE\_WAIT. The client goes into FIN-WAIT-2 when the acknowledgement is received and waits for an active close. When the server actively sends its own termination request, it goes into LAST-ACK and waits for an acknowledgement from the client. When the client receives the termination request from the server, it sends an acknowledgement and goes into TIME\_WAIT and after some time into CLOSED. The server goes into CLOSED state once it receives the acknowledgement from the client.
 
-<!--more-->
 
 FIN\_WAIT\_2
 ------------
