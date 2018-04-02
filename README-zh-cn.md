@@ -177,7 +177,7 @@ gem install jekyll
 
 ```yml
 # Site settings
-title: Ji Xiani Zhao
+title: Ji Xian Zhao
 brief-intro: Back-end Dev Engineer
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://jixianzhao.github.io" # the base hostname & protocol for your site

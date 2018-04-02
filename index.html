@@ -5,10 +5,14 @@ layout: default
 <div class="page clearfix" index>
     <div class="left">
         <h1>Welcome to Jixianzhao's Blog!</h1>
-        <small>这里记录着我的后端学习之路</small>
+        <small>Enjoy learning with me~ Focus on server side.</small>
         <hr>
+        <!-- stickie posts -->
         <ul>
             {% for post in paginator.posts %}
+	    	{% if post.stickie != true %}
+			{% continue %}
+		{% endif %}
               <li>
                 <h2>
                   <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
@@ -36,9 +40,62 @@ layout: default
                 <div class="excerpt">
                     {{post.excerpt}}
                 </div>
-                <div class="read-all">
-                    <a  href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>Read All</a>
+		{% capture pureContent %}{{ post.content.size | minus: 12 }}{% endcapture %}
+		{% assign pureContent = pureContent | plus:0 %}
+		{% if pureContent > post.excerpt.size %}
+			<br />
+			<br />
+			<div class="read-all">
+			    <a  href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>Read All</a>
+			</div>
+		{% endif %}
+                <hr>
+              </li>
+            {% endfor %}
+	    
+	    
+            <!-- normal posts -->
+            {% for post in paginator.posts %}
+	    	{% if post.stickie == true %}
+			{% continue %}
+		{% endif %}
+              <li>
+                <h2>
+                  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                </h2>
+                <div class="label">
+                    <div class="label-card">
+                        <i class="fa fa-calendar"></i>{{ post.date | date: "%F" }}
+                    </div>
+                    <div class="label-card">
+                        {% if post.author %}<i class="fa fa-user"></i>{{ post.author }}
+                        {% endif %}
+                    </div>
+                    <div class="label-card">
+                        {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }}  {% endif %}
+                    </div>
+
+                    <div class="label-card">
+                    {% include category.html %}
+                    </div>
+
+                    <div class="label-card">
+                    {% include tag.html %}
+                    </div>
                 </div>
+                <div class="excerpt">
+                    {{post.excerpt}}
+                </div>
+		{% capture pureContent %}{{ post.content.size | minus: 12 }}{% endcapture %}
+		{% assign pureContent = pureContent | plus:0 %}
+		{% if pureContent > post.excerpt.size %}
+		<!-- for test {{ post.content.size | minus: 12  }}, read more 2, {{ post.excerpt.size }} -->
+			<br />
+			<br />
+			<div class="read-all">
+			    <a  href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-newspaper-o"></i>Read All</a>
+			</div>
+		{% endif %}
                 <hr>
               </li>
             {% endfor %}
