@@ -60,4 +60,8 @@ excerpt_separator: "<!--more-->"
 gems: [jekyll-paginate]
 paginate: 6
 
+collections:
+    important:
+        output: true
+
 
