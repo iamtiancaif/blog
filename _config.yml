@@ -63,5 +63,6 @@ paginate: 6
 collections:
     important:
         output: true
+        permalink: /:year-:month-:day-:title
 
 
