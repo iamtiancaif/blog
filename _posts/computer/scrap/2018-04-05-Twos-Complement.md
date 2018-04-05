@@ -3,7 +3,7 @@ layout: post
 title:  "Two's Complement"
 categories: computer
 tags:  computer copy
-author: web
+author: Thomas Finley
 source: https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html
 ---
 
