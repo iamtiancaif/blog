@@ -9,6 +9,7 @@ layout: default
         <hr>
         <ul>
             <!-- stickie posts -->
+	    {% if paginator.page == 1 %}
             {% for post in site.important %}
                 <li>
                     <h2>
@@ -50,13 +51,10 @@ layout: default
                     <hr>
                 </li>
             {% endfor %}
-
+		{% endif %}
 
             <!-- normal posts -->
             {% for post in paginator.posts %}
-            {% if post.stickie == true %}
-            {% continue %}
-            {% endif %}
             <li>
                 <h2>
                     <a target="_blank" class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title
