@@ -13,18 +13,17 @@ source: https://stackoverflow.com/questions/3426182/how-to-escape-liquid-templat
 
 
 earchers, there _is_ a way to escape without plugins, use the code below:
-
+{% raw %}
     {{ "{% this " }}%}
-    
 
 and for tags, to escape `{{ this }}` use:
 
     {{ "{{ this " }}}}
+{% endraw %}    
     
 
 * * *
 
+
 There is also a jekyll plugin for this which makes it a whole lot easier: [https://gist.github.com/1020852](https://gist.github.com/1020852)
-{% raw %}
-> Raw tag for jekyll. Keeps liquid from parsing text betweeen {% raw %} and {% endraw %}
-{% endraw %}
+> Raw tag for jekyll. Keeps liquid from parsing text betweeen {{ "{% raw " }}%} and {{ "{% endraw " }}%}
