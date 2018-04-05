@@ -25,6 +25,3 @@ stickie: true
 > openstack云计算实践手册 <br/> 
 > docker窗口实践 <br/>
 
-## articles
-> [全网把Map中的hash()分析的最透彻的文章，别无二家](http://www.hollischuang.com/archives/2091) <br />
-> [Jekyll x Liquid: 文章置顶功能的实现](https://blog.csdn.net/szhielelp/article/details/54881594) <br />
