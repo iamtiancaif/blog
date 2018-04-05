@@ -11,7 +11,7 @@ source: https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html
 {:toc}
 
 
-Today, I recall the indeed mechanism of 2's complement which I think I never understood absolutely in college.    
+Today, I recall the indeed mechanism of 2's complement which I think I never understood absolutely during my collegehood.    
 Cheers ! ^w^
 
 By JiXianzhao.
