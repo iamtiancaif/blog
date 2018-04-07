@@ -23,5 +23,5 @@ stickie: true
 ## books
 > netty权威指南 <br />
 > openstack云计算实践手册 <br/> 
-> docker窗口实践 <br/>
+> docker容器实践 <br/>
 
