@@ -20,8 +20,6 @@ type: page
 学习是一个非常愉快的过程。共同加油！
 
 
-![纪贤钊](/cnicg-anniversary-3.jpg "a brilliant boy" ){:height="480px" width="720px"}
-
 ## 联系我
 
 * GitHub：[Jixianzhao](https://github.com/jixianzhao)
