@@ -12,7 +12,9 @@ source: https://www.rosehosting.com/blog/how-to-install-jekyll-on-debian-8/
 
 Jekyll is a static website generator written in Ruby. By using Jekyll you can create personal websites or websites for organizations without using databases. The main feature of Jekyll is that it can transform the plain text to a static website by rendering Markdown or Textile and Liquid templates. Jekyll is used as an engine behind GitHub Pages. Today we will show you how to install it on a [Linux VPS](https://www.rosehosting.com/).  
 
-To install Jekyll you need to log in to your virtual server via SSH. Once you are logged in, you should update all your system software to the latest version available before you continue. Therefore, execute the following commands one by one:
+To install Jekyll you need to log in to your virtual server via SSH. Once you are logged in, you should update all your system software to the latest version available before you continue. 
+<!--more-->
+Therefore, execute the following commands one by one:
 
 	sudo apt-get update
 	sudo apt-get upgrade
@@ -28,7 +30,6 @@ This will take a few moments. After the process is completed, you can verify tha
 You should get something like this:
 
 ruby 2.1.5p273 (2014-11-13) \[x86_64-linux-gnu\]
-<!--more-->
 
 Jekyll 2 requires Ruby v1.9.3 or above and Jekyll 3 requires Ruby v2 or above. As you can see in the previous output, our version is 2.1.5p273, which means we are good to go.
 

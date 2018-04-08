@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "shift operator in java"
-categories: computer java
-tags:  computer article java copy
+categories: computer
+tags:  computer article java copy stackoverflow
 author: web
 source: https://stackoverflow.com/questions/19058859/what-does-mean-in-java
 ---

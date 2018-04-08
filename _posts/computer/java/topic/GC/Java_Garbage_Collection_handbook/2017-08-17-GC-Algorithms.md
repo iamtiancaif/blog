@@ -2,7 +2,7 @@
 layout: post
 title:  "GC Algorithms"
 date: 2017-08-17 16:16:01
-categories: computer java
+categories: computer
 tags:  copy computer java
 author: web
 source: https://plumbr.io/handbook/garbage-collection-algorithms-implementations#serial-gc

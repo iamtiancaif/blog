@@ -12,8 +12,14 @@ layout: default
             </div>
 
             <div class="label-card">
-                {% if page.author %}<i class="fa fa-user"></i>{{ page.author }}
-                {% endif %}
+		{% if page.author %}
+			<i class="fa fa-user"></i>
+			{% if page.source %}
+				<a target="_blank" href="{{ page.source }}">{{ page.author }}</a>
+			{% else %}
+				{{ page.author }}
+			{% endif %}
+		{% endif %}
             </div>
 
             <div class="label-card">

@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "dive into bio, nio and aio"
-categories: computer java
+categories: computer
 tags:  computer os java
 author: JiXianzhao
 ---

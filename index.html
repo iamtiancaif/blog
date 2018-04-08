@@ -21,8 +21,14 @@ layout: default
                             <i class="fa fa-calendar"></i>{{ post.date | date: "%F" }}
                         </div>
                         <div class="label-card">
-                            {% if post.author %}<i class="fa fa-user"></i>{{ post.author }}
-                            {% endif %}
+				{% if post.author %}
+					<i class="fa fa-user"></i>
+					{% if post.source %}
+						<a target="_blank" href="{{ post.source }}">{{ post.author }}</a>
+					{% else %}
+						{{ post.author }}
+					{% endif %}
+				{% endif %}
                         </div>
                         <div class="label-card">
                             {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }} {% endif %}
@@ -65,8 +71,14 @@ layout: default
                         <i class="fa fa-calendar"></i>{{ post.date | date: "%F" }}
                     </div>
                     <div class="label-card">
-                        {% if post.author %}<i class="fa fa-user"></i>{{ post.author }}
-                        {% endif %}
+			{% if post.author %}
+				<i class="fa fa-user"></i>
+				{% if post.source %}
+					<a target="_blank" href="{{ post.source }}">{{ post.author }}</a>
+				{% else %}
+					{{ post.author }}
+				{% endif %}
+			{% endif %}
                     </div>
                     <div class="label-card">
                         {% if page.meta %}<i class="fa fa-key"></i>{{ page.meta }} {% endif %}
@@ -81,10 +93,8 @@ layout: default
                     </div>
                 </div>
                 <div class="excerpt">
-                    {% assign note=post.excerpt | replace: '<h1', '<strong' | replace: '<h2', '<strong' | replace: '<h3
-                    ', '<strong' %}
-                    {% assign note=note | replace: '</h1>', '</strong>' | replace: '</h2>', '</strong>' | replace:
-                    '</h3>', '</strong>' %}
+                    {% assign note=post.excerpt | replace: '<h1', '<strong' | replace: '<h2', '<strong' | replace: '<h3', '<strong' %}
+                    {% assign note=note | replace: '</h1>', '</strong>' | replace: '</h2>', '</strong>' | replace: '</h3>', '</strong>' %}
                     {{ note }}
                 </div>
                 {% capture pureContent %}{{ post.content.size | minus: 12 }}{% endcapture %}
