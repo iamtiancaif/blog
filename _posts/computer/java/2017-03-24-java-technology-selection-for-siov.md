@@ -82,8 +82,8 @@ grpc / thrift / ice / dubbo
 
 
 ### 3.2 configure
-spring-cloud-configserver    
-在 spring-cloud 的服务注册发现方案中，配置内容的存储和发布被拆分到2个应用中，其中存储由 spring-cloud-configserver 完成。  
+spring-cloud-configserver
+基于git的配置管理，方便版本控制和差错检查。
 <br>
 
 ### 3.3 discovery
