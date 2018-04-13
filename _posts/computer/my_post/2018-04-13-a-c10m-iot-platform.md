@@ -17,7 +17,7 @@ conclusion first
 
 28000 sockets consume 70M memory of Old Generation.
 
-2661.800285714 Byte per socket
+2661 Byte per socket
 
 **simple calculation**
 
