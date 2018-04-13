@@ -84,7 +84,7 @@ Cause each time the calculation as **simple calculation** resulted in the nearly
 	   free     = 1919058744 (1830.1570358276367MB)
 	   7.754181661913472% used
 	
-14720 interned Strings occupying 1409304 bytes.
+	14720 interned Strings occupying 1409304 bytes.
 
 
 ## gc state of server after connectted
