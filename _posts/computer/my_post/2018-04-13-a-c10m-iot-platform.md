@@ -166,6 +166,7 @@ Here is the linux system config of client:
 	$ cat /proc/sys/vm/max_map_count
 	600000
 
+	# this one seems make nonsense
 	$ cat /proc/sys/kernel/pid_max
 	999999
 
