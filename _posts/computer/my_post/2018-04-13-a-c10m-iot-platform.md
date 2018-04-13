@@ -135,3 +135,246 @@ Cause each time the calculation as **simple calculation** resulted in the nearly
 	   11.336728834336803% used
 	
 	14722 interned Strings occupying 1409440 bytes.
+
+
+Questions
+---------
+### 1. how to beyond 29000 connections on one client
+The max connections I can hit is 28231 per client.  
+Exactly 28231 every time.  
+Here is the linux system config of client:
+
+	$ ulimit -a
+	core file size          (blocks, -c) 0
+	data seg size           (kbytes, -d) unlimited
+	scheduling priority             (-e) 0
+	file size               (blocks, -f) unlimited
+	pending signals                 (-i) 99999999
+	max locked memory       (kbytes, -l) 64
+	max memory size         (kbytes, -m) unlimited
+	open files                      (-n) 655350
+	pipe size            (512 bytes, -p) 8
+	POSIX message queues     (bytes, -q) 819200
+	real-time priority              (-r) 0
+	stack size              (kbytes, -s) 8192
+	cpu time               (seconds, -t) unlimited
+	max user processes              (-u) unlimited
+	virtual memory          (kbytes, -v) unlimited
+	file locks                      (-x) unlimited
+
+	$ cat /proc/sys/vm/max_map_count
+	600000
+
+	$ cat /proc/sys/kernel/pid_max
+	999999
+
+
+#### client java code:
+##### MultiplexClient
+
+	package com.sciov.demo.multilex.client;
+
+	import java.io.BufferedReader;
+	import java.io.IOException;
+	import java.io.InputStreamReader;
+	import java.util.Queue;
+	import java.util.Random;
+	import java.util.UUID;
+	import java.util.concurrent.LinkedBlockingQueue;
+	import java.util.concurrent.atomic.AtomicInteger;
+	import org.apache.commons.lang3.StringUtils;
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
+	import io.netty.bootstrap.Bootstrap;
+	import io.netty.buffer.ByteBuf;
+	import io.netty.buffer.ByteBufAllocator;
+	import io.netty.buffer.Unpooled;
+	import io.netty.buffer.UnpooledByteBufAllocator;
+	import io.netty.channel.Channel;
+	import io.netty.channel.ChannelInitializer;
+	import io.netty.channel.ChannelPipeline;
+	import io.netty.channel.nio.NioEventLoopGroup;
+	import io.netty.channel.socket.SocketChannel;
+	import io.netty.channel.socket.nio.NioSocketChannel;
+	import io.netty.handler.codec.mqtt.MqttConnectMessage;
+	import io.netty.handler.codec.mqtt.MqttConnectPayload;
+	import io.netty.handler.codec.mqtt.MqttConnectVariableHeader;
+	import io.netty.handler.codec.mqtt.MqttDecoder;
+	import io.netty.handler.codec.mqtt.MqttEncoder;
+	import io.netty.handler.codec.mqtt.MqttFixedHeader;
+	import io.netty.handler.codec.mqtt.MqttMessageType;
+	import io.netty.handler.codec.mqtt.MqttPublishMessage;
+	import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
+	import io.netty.handler.codec.mqtt.MqttQoS;
+	import io.netty.handler.codec.mqtt.MqttVersion;
+
+	public class MultiplexClient implements Runnable {
+		private static final Logger logger = LoggerFactory.getLogger(MultiplexClient.class);
+
+		private static final int MAX_PAYLOAD_SIZE = 64 * 1024 * 1024;
+
+		private static final int groupSize = Runtime.getRuntime().availableProcessors() * 2;
+		private static final NioEventLoopGroup group = new NioEventLoopGroup(groupSize);
+
+		private static final Queue<Channel> channelQueue = new LinkedBlockingQueue<>();
+
+		private final AtomicInteger messageId = new AtomicInteger();
+		private static final ByteBufAllocator ALLOCATOR = new UnpooledByteBufAllocator(false);
+
+		public static void main(String[] args) throws Exception {
+			int connectionCount = 2;
+			String ipAddr = "127.0.0.1";
+			int port = 1883;
+			for (String arg : args) {
+				if (arg.startsWith("--")) {
+					int indexOfEquator = arg.indexOf("=");
+					String argName = arg.substring(2, indexOfEquator);
+					String value = arg.substring(indexOfEquator+1);
+					logger.info("arg name {}, value {}", argName, value);
+
+					switch (argName) {
+						case "connection.count":
+							try {
+								connectionCount = Integer.valueOf(value);
+							} catch (Exception e) {
+								logger.error("failed to parse integer with string {} for count.", value);
+							}
+							break;
+						case "connection.server":
+							ipAddr = value;
+							break;
+						case "connection.port":
+							try {
+								port = Integer.valueOf(value);
+							} catch (Exception e) {
+								logger.error("failed to parse integer with string {} for port.", value);
+							}
+							break;
+					}
+				}
+			}
+			MultiplexClient tc = new MultiplexClient();
+			Thread thread = new Thread(tc);
+			thread.start();
+			for (int i = 0; i< connectionCount; i++) {
+				tc.connect(ipAddr, port);
+			}
+	//		Random random = new Random();
+	//		while (true) {
+	//			tc.mqttPublish("hello " + random.nextInt(1000000));
+	//		}
+		}
+
+		public void run() {
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			for (;;) {
+				String line = null;
+				try {
+					line = in.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
+				if (line == null) {
+					break;
+				}
+				Channel ch = channelQueue.poll();
+				try {
+					mqttPublish(ch, line);
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				if (ch != null) {
+					channelQueue.add(ch);
+				}
+			}
+		}
+
+		public void connect(String host, int port) throws Exception {
+			try {
+				Bootstrap b = new Bootstrap();
+				b.group(group).channel(NioSocketChannel.class).remoteAddress(host, port).handler(
+						new ChannelInitializer<SocketChannel>() {
+							@Override
+							protected void initChannel(SocketChannel ch) throws Exception {
+								ChannelPipeline pipeline = ch.pipeline();
+								pipeline.addLast("decoder", new MqttDecoder(MAX_PAYLOAD_SIZE));
+								pipeline.addLast("encoder", MqttEncoder.INSTANCE);
+								pipeline.addLast("mqttHandle", new MqttTransportHandler(UUID.randomUUID().toString()));
+							}
+						}
+				);
+
+				// shack
+				Channel ch = b.connect().sync().channel();
+
+				mqttConnect(ch);
+				channelQueue.add(ch);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+
+		protected void mqttConnect(Channel ch) {
+			MqttFixedHeader mqttFixedHeader =
+					new MqttFixedHeader(MqttMessageType.CONNECT, false, MqttQoS.AT_LEAST_ONCE, false, 0);
+			MqttConnectVariableHeader variableHeader = new MqttConnectVariableHeader(
+					MqttVersion.MQTT_3_1_1.protocolName(),
+					MqttVersion.MQTT_3_1_1.protocolLevel(),
+					true,
+					false,
+					false,
+					1,
+					false,
+					true,
+					10);
+
+			MqttConnectPayload payload = new MqttConnectPayload(
+					String.valueOf(new Random().nextInt(100000000)),
+					null,
+					null,
+					"123456",
+					""
+			);
+
+			MqttConnectMessage connectMessage = new MqttConnectMessage(mqttFixedHeader, variableHeader, payload);
+			ch.writeAndFlush(connectMessage);
+		}
+
+		protected void mqttPublish(String message) {
+			Channel ch = channelQueue.poll();
+			try {
+				mqttPublish(ch, message);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			if (ch != null) {
+				channelQueue.add(ch);
+			}
+		}
+
+		protected void mqttPublish(Channel ch, String message) {
+			if (StringUtils.isBlank(message)) {
+				return;
+			}
+			
+			byte[] bytes = message.getBytes();
+			ByteBuf msg = Unpooled.buffer(bytes.length);
+			msg.writeBytes(bytes);
+
+			MqttFixedHeader mqttFixedHeader =
+					new MqttFixedHeader(MqttMessageType.PUBLISH, false, MqttQoS.AT_LEAST_ONCE, false, 0);
+			MqttPublishVariableHeader header = new MqttPublishVariableHeader("test", messageId.incrementAndGet());
+
+			ByteBuf payload = ALLOCATOR.buffer();
+			payload.writeBytes(msg.copy());
+			MqttPublishMessage publishMessage = new MqttPublishMessage(mqttFixedHeader, header, payload);
+			ch.writeAndFlush(publishMessage);
+		}
+	}
+
+
+
+
+
+
