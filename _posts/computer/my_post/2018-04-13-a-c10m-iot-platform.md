@@ -36,6 +36,7 @@ conclusion first
 
 
 Cause each time the calculation as **simple calculation** resulted in the nearly same value, I just present the last time I did. The following:
+<!--more-->
 
 ## gc state of server before connecting
 	$ jmap -heap 5440
