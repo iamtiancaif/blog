@@ -3,6 +3,7 @@ layout: post
 title:  "max thread of java process on linux"
 categories: computer
 tags:  computer java performance jixianzhao to-be-continued
+ignore: true
 author: jixianzhao
 ---
 
