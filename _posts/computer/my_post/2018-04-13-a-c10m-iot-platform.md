@@ -9,6 +9,31 @@ author: JiXianzhao
 * content
 {:toc}
 
+
+Benchmark
+=========
+
+qps test 1
+------
+
+**environment**  
+1. 7 test machines run on docker. 1 for server, 6 others for clients. Both server and clients were based on netty.  
+2. Server run in full asynchronized mode.  
+	It means using callback instead of method sync in everywhere possible.
+3. clients run in half asynchronized mode.   
+	It means using method sync when connect and send out data; operation of handling received data was based on netty eventloop, thread count was double of cpus cores.  
+	After connecting phase was done, there was only one thread run for sending ping request and other data.  
+	Here is [client source code](#multiplexclient).  
+
+**test points**  
+1. max devices connect at once.  
+	2660 per second = (168000-8400)/60.  
+2. max ping request at once.  
+	40983.6 per second = 10000/(0.579−0.335).
+
+**conclusion**  
+I thing these score wasn't the upper limit of server. Because clients hadn't simulate a real concurrent environment.
+
 A rough estimation about memory overhead
 ========================================
 
