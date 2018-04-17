@@ -166,6 +166,28 @@ Cause each time the calculation as **simple calculation** resulted in the nearly
 Questions
 ---------
 ### 1. how to beyond 29000 connections on one client
+Finally I google out the answer:  
+[Can't open more than 28234 sockets?](https://stackoverflow.com/questions/6244532/cant-open-more-than-28234-sockets)
+
+>The ephemeral port range is set in:
+>
+>/proc/sys/net/ipv4/ip_local_port_range
+>Prevents you from creating more connections.
+>
+
+and  
+
+
+>The usual workaround is to create additional IP addresses on the host, each IP will gain you an additional ephemeral port range as per dan_waterworth's answer as long as you bind the socket to the interface.
+>
+>Microsoft have a discussion on the topic here:
+>
+>[http://msdn.microsoft.com/en-us/library/cc150670(v=vs.85).aspx](http://msdn.microsoft.com/en-us/library/cc150670(v=vs.85).aspx) 
+ 
+I backup this Microsoft article on my blog at SO_PORT_SCALABILITY 
+
+
+#### the original answer
 The max connections I can hit is 28231 per client.  
 Exactly 28231 every time.  
 Here is the linux system config of client:
