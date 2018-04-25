@@ -2,7 +2,7 @@
 layout: post
 title:  "stl source code analysis of red black tree illustration"
 categories: computer
-tags:  computer linux algorithm
+tags:  computer linux algorithm red_black_tree
 author: hackbuteer1
 source: https://blog.csdn.net/hackbuteer1/article/details/7740956
 ignore: true
@@ -13,7 +13,17 @@ ignore: true
 {:toc}
 
 
+
+
+
 转载请标明出处，原文地址：[http://blog.csdn.net/hackbuteer1/article/details/7740956](http://blog.csdn.net/hackbuteer1/article/details/7740956)  
+
+
+a youtube serials video illustrate it in detail
+=======================================
+
+[Red Black Tree - Part 1](https://www.youtube.com/watch?v=PhY56LpCtP4&t=322s)
+
 
 一、红黑树概述
 ===========================================================================================================================================
@@ -78,176 +88,179 @@ Case 4:
       其实红黑树的插入操作不是很难，甚至比AVL树的插入操作还更简单些。红黑树的插入操作源代码如下：  
 
 
-	1.  // 元素插入操作  insert_unique()
-	2.  // 插入新值：节点键值不允许重复，若重复则插入无效
-	3.  // 注意，返回值是个pair，第一个元素是个红黑树迭代器，指向新增节点
-	4.  // 第二个元素表示插入成功与否
-	5.  template<class Key , class Value , class KeyOfValue , class Compare , class Alloc>  
-	6.  pair<typename rb_tree<Key , Value , KeyOfValue , Compare , Alloc>::iterator , bool>  
-	7.  rb\_tree<Key , Value , KeyOfValue , Compare , Alloc>::insert\_unique(const Value &v)  
-	8.  {  
-	9.      rb\_tree\_node* y = header;    // 根节点root的父节点
-	10.      rb\_tree\_node* x = root();    // 从根节点开始
-	11.      bool comp = true;  
-	12.      while(x != 0)  
-	13.      {  
-	14.          y = x;  
-	15.          comp = key_compare(KeyOfValue()(v) , key(x));    // v键值小于目前节点之键值？
-	16.          x = comp ? left(x) : right(x);   // 遇“大”则往左，遇“小于或等于”则往右
-	17.      }  
-	18.      // 离开while循环之后，y所指即插入点之父节点（此时的它必为叶节点）
-	19.      iterator j = iterator(y);     // 令迭代器j指向插入点之父节点y
-	20.      if(comp)     // 如果离开while循环时comp为真（表示遇“大”，将插入于左侧）
-	21.      {  
-	22.          if(j == begin())    // 如果插入点之父节点为最左节点
-	23.              return pair<iterator , bool>(_insert(x , y , z) , true);  
-	24.          else// 否则（插入点之父节点不为最左节点）
-	25.              --j;   // 调整j，回头准备测试
-	26.      }  
-	27.      if(key_compare(key(j.node) , KeyOfValue()(v) ))  
-	28.          // 新键值不与既有节点之键值重复，于是以下执行安插操作
-	29.          return pair<iterator , bool>(_insert(x , y , z) , true);  
-	30.      // 以上，x为新值插入点，y为插入点之父节点，v为新值
-
-	32.      // 进行至此，表示新值一定与树中键值重复，那么就不应该插入新值
-	33.      return pair<iterator , bool>(j , false);  
-	34.  }  
-
-	36.  // 真正地插入执行程序 _insert()
-	37.  template<class Key , class Value , class KeyOfValue , class Compare , class Alloc>  
-	38.  typename<Key , Value , KeyOfValue , Compare , Alloc>::\_insert(base\_ptr x_ , base\_ptr y\_ , const Value &v)  
-	39.  {  
-	40.      // 参数x_ 为新值插入点，参数y_为插入点之父节点，参数v为新值
-	41.      link\_type x = (link\_type) x_;  
-	42.      link\_type y = (link\_type) y_;  
-	43.      link_type z;  
-
-	45.      // key_compare 是键值大小比较准则。应该会是个function object
-	46.      if(y == header || x != 0 || key_compare(KeyOfValue()(v) , key(y) ))  
-	47.      {  
-	48.          z = create_node(v);    // 产生一个新节点
-	49.          left(y) = z;           // 这使得当y即为header时，leftmost() = z
-	50.          if(y == header)  
-	51.          {  
-	52.              root() = z;  
-	53.              rightmost() = z;  
-	54.          }  
-	55.          elseif(y == leftmost())     // 如果y为最左节点
-	56.              leftmost() = z;          // 维护leftmost()，使它永远指向最左节点
-	57.      }  
-	58.      else
-	59.      {  
-	60.          z = create_node(v);        // 产生一个新节点
-	61.          right(y) = z;              // 令新节点成为插入点之父节点y的右子节点
-	62.          if(y == rightmost())  
-	63.              rightmost() = z;       // 维护rightmost()，使它永远指向最右节点
-	64.      }  
-	65.      parent(z) = y;      // 设定新节点的父节点
-	66.      left(z) = 0;        // 设定新节点的左子节点
-	67.      right(z) = 0;       // 设定新节点的右子节点
-	68.      // 新节点的颜色将在\_rb\_tree_rebalance()设定（并调整）
-	69.      \_rb\_tree_rebalance(z , header->parent);      // 参数一为新增节点，参数二为根节点root
-	70.      ++node_count;       // 节点数累加
-	71.      return iterator(z);  // 返回一个迭代器，指向新增节点
-	72.  }  
-
-	75.  // 全局函数
-	76.  // 重新令树形平衡（改变颜色及旋转树形）
-	77.  // 参数一为新增节点，参数二为根节点root
-	78.  inlinevoid \_rb\_tree\_rebalance(\_rb\_tree\_node\_base* x , \_rb\_tree\_node_base*& root)  
-	79.  {  
-	80.      x->color = \_rb\_tree_red;    //新节点必为红
-	81.      while(x != root && x->parent->color == \_rb\_tree_red)    // 父节点为红
-	82.      {  
-	83.          if(x->parent == x->parent->parent->left)      // 父节点为祖父节点之左子节点
-	84.          {  
-	85.              \_rb\_tree\_node\_base* y = x->parent->parent->right;    // 令y为伯父节点
-	86.              if(y && y->color == \_rb\_tree_red)    // 伯父节点存在，且为红
-	87.              {  
-	88.                  x->parent->color = \_rb\_tree_black;           // 更改父节点为黑色
-	89.                  y->color = \_rb\_tree_black;                   // 更改伯父节点为黑色
-	90.                  x->parent->parent->color = \_rb\_tree_red;     // 更改祖父节点为红色
-	91.                  x = x->parent->parent;  
-	92.              }  
-	93.              else// 无伯父节点，或伯父节点为黑色
-	94.              {  
-	95.                  if(x == x->parent->right)   // 如果新节点为父节点之右子节点
-	96.                  {  
-	97.                      x = x->parent;  
-	98.                      \_rb\_tree\_rotate\_left(x , root);    // 第一个参数为左旋点
-	99.                  }  
-	100.                  x->parent->color = \_rb\_tree_black;     // 改变颜色
-	101.                  x->parent->parent->color = \_rb\_tree_red;  
-	102.                  \_rb\_tree\_rotate\_right(x->parent->parent , root);    // 第一个参数为右旋点
-	103.              }  
-	104.          }  
-	105.          else// 父节点为祖父节点之右子节点
-	106.          {  
-	107.              \_rb\_tree\_node\_base* y = x->parent->parent->left;    // 令y为伯父节点
-	108.              if(y && y->color == \_rb\_tree_red)    // 有伯父节点，且为红
-	109.              {  
-	110.                  x->parent->color = \_rb\_tree_black;           // 更改父节点为黑色
-	111.                  y->color = \_rb\_tree_black;                   // 更改伯父节点为黑色
-	112.                  x->parent->parent->color = \_rb\_tree_red;     // 更改祖父节点为红色
-	113.                  x = x->parent->parent;          // 准备继续往上层检查
-	114.              }  
-	115.              else// 无伯父节点，或伯父节点为黑色
-	116.              {  
-	117.                  if(x == x->parent->left)        // 如果新节点为父节点之左子节点
-	118.                  {  
-	119.                      x = x->parent;  
-	120.                      \_rb\_tree\_rotate\_right(x , root);    // 第一个参数为右旋点
-	121.                  }  
-	122.                  x->parent->color = \_rb\_tree_black;     // 改变颜色
-	123.                  x->parent->parent->color = \_rb\_tree_red;  
-	124.                  \_rb\_tree\_rotate\_left(x->parent->parent , root);    // 第一个参数为左旋点
-	125.              }  
-	126.          }  
-	127.      }//while
-	128.      root->color = \_rb\_tree_black;    // 根节点永远为黑色
-	129.  }  
-
-	132.  // 左旋函数
-	133.  inlinevoid \_rb\_tree\_rotate\_left(\_rb\_tree\_node\_base* x , \_rb\_tree\_node\_base*& root)  
-	134.  {  
-	135.      // x 为旋转点
-	136.      \_rb\_tree\_node\_base* y = x->right;          // 令y为旋转点的右子节点
-	137.      x->right = y->left;  
-	138.      if(y->left != 0)  
-	139.          y->left->parent = x;           // 别忘了回马枪设定父节点
-	140.      y->parent = x->parent;  
-
-	142.      // 令y完全顶替x的地位（必须将x对其父节点的关系完全接收过来）
-	143.      if(x == root)    // x为根节点
-	144.          root = y;  
-	145.      elseif(x == x->parent->left)         // x为其父节点的左子节点
-	146.          x->parent->left = y;  
-	147.      else// x为其父节点的右子节点
-	148.          x->parent->right = y;  
-	149.      y->left = x;  
-	150.      x->parent = y;  
-	151.  }  
-
-	154.  // 右旋函数
-	155.  inlinevoid \_rb\_tree\_rotate\_right(\_rb\_tree\_node\_base* x , \_rb\_tree\_node\_base*& root)  
-	156.  {  
-	157.      // x 为旋转点
-	158.      \_rb\_tree\_node\_base* y = x->left;          // 令y为旋转点的左子节点
-	159.      x->left = y->right;  
-	160.      if(y->right != 0)  
-	161.          y->right->parent = x;           // 别忘了回马枪设定父节点
-	162.      y->parent = x->parent;  
-
-	164.      // 令y完全顶替x的地位（必须将x对其父节点的关系完全接收过来）
-	165.      if(x == root)  
-	166.          root = y;  
-	167.      elseif(x == x->parent->right)         // x为其父节点的右子节点
-	168.          x->parent->right = y;  
-	169.      else// x为其父节点的左子节点
-	170.          x->parent->left = y;  
-	171.      y->right = x;  
-	172.      x->parent = y;  
-	173.  }  
+	// 元素插入操作  insert_unique()  
+	// 插入新值：节点键值不允许重复，若重复则插入无效  
+	// 注意，返回值是个pair，第一个元素是个红黑树迭代器，指向新增节点  
+	// 第二个元素表示插入成功与否  
+	template<class Key , class Value , class KeyOfValue , class Compare , class Alloc>  
+	pair<typename rb_tree<Key , Value , KeyOfValue , Compare , Alloc>::iterator , bool>  
+	rb_tree<Key , Value , KeyOfValue , Compare , Alloc>::insert_unique(const Value &v)  
+	{  
+	    rb_tree_node* y = header;    // 根节点root的父节点  
+	    rb_tree_node* x = root();    // 从根节点开始  
+	    bool comp = true;  
+	    while(x != 0)  
+	    {  
+		y = x;  
+		comp = key_compare(KeyOfValue()(v) , key(x));    // v键值小于目前节点之键值？  
+		x = comp ? left(x) : right(x);   // 遇“大”则往左，遇“小于或等于”则往右  
+	    }  
+	    // 离开while循环之后，y所指即插入点之父节点（此时的它必为叶节点）  
+	    iterator j = iterator(y);     // 令迭代器j指向插入点之父节点y  
+	    if(comp)     // 如果离开while循环时comp为真（表示遇“大”，将插入于左侧）  
+	    {  
+		if(j == begin())    // 如果插入点之父节点为最左节点  
+		    return pair<iterator , bool>(_insert(x , y , z) , true);  
+		else     // 否则（插入点之父节点不为最左节点）  
+		    --j;   // 调整j，回头准备测试  
+	    }  
+	    if(key_compare(key(j.node) , KeyOfValue()(v) ))  
+		// 新键值不与既有节点之键值重复，于是以下执行安插操作  
+		return pair<iterator , bool>(_insert(x , y , z) , true);  
+	    // 以上，x为新值插入点，y为插入点之父节点，v为新值  
+	  
+	    // 进行至此，表示新值一定与树中键值重复，那么就不应该插入新值  
+	    return pair<iterator , bool>(j , false);  
+	}  
+	  
+	// 真正地插入执行程序 _insert()  
+	template<class Key , class Value , class KeyOfValue , class Compare , class Alloc>  
+	typename<Key , Value , KeyOfValue , Compare , Alloc>::_insert(base_ptr x_ , base_ptr y_ , const Value &v)  
+	{  
+	    // 参数x_ 为新值插入点，参数y_为插入点之父节点，参数v为新值  
+	    link_type x = (link_type) x_;  
+	    link_type y = (link_type) y_;  
+	    link_type z;  
+	  
+	    // key_compare 是键值大小比较准则。应该会是个function object  
+	    if(y == header || x != 0 || key_compare(KeyOfValue()(v) , key(y) ))  
+	    {  
+		z = create_node(v);    // 产生一个新节点  
+		left(y) = z;           // 这使得当y即为header时，leftmost() = z  
+		if(y == header)  
+		{  
+		    root() = z;  
+		    rightmost() = z;  
+		}  
+		else if(y == leftmost())     // 如果y为最左节点  
+		    leftmost() = z;          // 维护leftmost()，使它永远指向最左节点  
+	    }  
+	    else  
+	    {  
+		z = create_node(v);        // 产生一个新节点  
+		right(y) = z;              // 令新节点成为插入点之父节点y的右子节点  
+		if(y == rightmost())  
+		    rightmost() = z;       // 维护rightmost()，使它永远指向最右节点  
+	    }  
+	    parent(z) = y;      // 设定新节点的父节点  
+	    left(z) = 0;        // 设定新节点的左子节点  
+	    right(z) = 0;       // 设定新节点的右子节点  
+	    // 新节点的颜色将在_rb_tree_rebalance()设定（并调整）  
+	    _rb_tree_rebalance(z , header->parent);      // 参数一为新增节点，参数二为根节点root  
+	    ++node_count;       // 节点数累加  
+	    return iterator(z);  // 返回一个迭代器，指向新增节点  
+	}  
+	  
+	  
+	// 全局函数  
+	// 重新令树形平衡（改变颜色及旋转树形）  
+	// 参数一为新增节点，参数二为根节点root  
+	inline void _rb_tree_rebalance(_rb_tree_node_base* x , _rb_tree_node_base*& root)  
+	{  
+	    x->color = _rb_tree_red;    //新节点必为红  
+	    while(x != root && x->parent->color == _rb_tree_red)    // 父节点为红  
+	    {  
+		if(x->parent == x->parent->parent->left)      // 父节点为祖父节点之左子节点  
+		{  
+		    _rb_tree_node_base* y = x->parent->parent->right;    // 令y为伯父节点  
+		    if(y && y->color == _rb_tree_red)    // 伯父节点存在，且为红  
+		    {  
+		        x->parent->color = _rb_tree_black;           // 更改父节点为黑色  
+		        y->color = _rb_tree_black;                   // 更改伯父节点为黑色  
+		        x->parent->parent->color = _rb_tree_red;     // 更改祖父节点为红色  
+		        x = x->parent->parent;  
+		    }  
+		    else    // 无伯父节点，或伯父节点为黑色  
+		    {  
+		        if(x == x->parent->right)   // 如果新节点为父节点之右子节点  
+		        {  
+		            x = x->parent;  
+		            _rb_tree_rotate_left(x , root);    // 第一个参数为左旋点  
+		        }  
+		        x->parent->color = _rb_tree_black;     // 改变颜色  
+		        x->parent->parent->color = _rb_tree_red;  
+		        _rb_tree_rotate_right(x->parent->parent , root);    // 第一个参数为右旋点  
+		    }  
+		}  
+		else          // 父节点为祖父节点之右子节点  
+		{  
+		    _rb_tree_node_base* y = x->parent->parent->left;    // 令y为伯父节点  
+		    if(y && y->color == _rb_tree_red)    // 有伯父节点，且为红  
+		    {  
+		        x->parent->color = _rb_tree_black;           // 更改父节点为黑色  
+		        y->color = _rb_tree_black;                   // 更改伯父节点为黑色  
+		        x->parent->parent->color = _rb_tree_red;     // 更改祖父节点为红色  
+		        x = x->parent->parent;          // 准备继续往上层检查  
+		    }  
+		    else    // 无伯父节点，或伯父节点为黑色  
+		    {  
+		        if(x == x->parent->left)        // 如果新节点为父节点之左子节点  
+		        {  
+		            x = x->parent;  
+		            _rb_tree_rotate_right(x , root);    // 第一个参数为右旋点  
+		        }  
+		        x->parent->color = _rb_tree_black;     // 改变颜色  
+		        x->parent->parent->color = _rb_tree_red;  
+		        _rb_tree_rotate_left(x->parent->parent , root);    // 第一个参数为左旋点  
+		    }  
+		}  
+	    }//while  
+	    root->color = _rb_tree_black;    // 根节点永远为黑色  
+	}  
+	  
+	  
+	// 左旋函数  
+	inline void _rb_tree_rotate_left(_rb_tree_node_base* x , _rb_tree_node_base*& root)  
+	{  
+	    // x 为旋转点  
+	    _rb_tree_node_base* y = x->right;          // 令y为旋转点的右子节点  
+	    x->right = y->left;  
+	    if(y->left != 0)  
+		y->left->parent = x;           // 别忘了回马枪设定父节点  
+	    y->parent = x->parent;  
+	  
+	    // 令y完全顶替x的地位（必须将x对其父节点的关系完全接收过来）  
+	    if(x == root)    // x为根节点  
+		root = y;  
+	    else if(x == x->parent->left)         // x为其父节点的左子节点  
+		x->parent->left = y;  
+	    else                                  // x为其父节点的右子节点  
+		x->parent->right = y;  
+	    y->left = x;  
+	    x->parent = y;  
+	}  
+	  
+	  
+	// 右旋函数  
+	inline void _rb_tree_rotate_right(_rb_tree_node_base* x , _rb_tree_node_base*& root)  
+	{  
+	    // x 为旋转点  
+	    _rb_tree_node_base* y = x->left;          // 令y为旋转点的左子节点  
+	    x->left = y->right;  
+	    if(y->right != 0)  
+		y->right->parent = x;           // 别忘了回马枪设定父节点  
+	    y->parent = x->parent;  
+	  
+	    // 令y完全顶替x的地位（必须将x对其父节点的关系完全接收过来）  
+	    if(x == root)  
+		root = y;  
+	    else if(x == x->parent->right)         // x为其父节点的右子节点  
+		x->parent->right = y;  
+	    else                                  // x为其父节点的左子节点  
+		x->parent->left = y;  
+	    y->right = x;  
+	    x->parent = y;  
+	}
 
   
 转载请标明出处，原文地址：[http://blog.csdn.net/hackbuteer1/article/details/7740956](http://blog.csdn.net/hackbuteer1/article/details/7740956)

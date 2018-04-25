@@ -161,9 +161,199 @@ app is not writing to nohup.out
 https://serverfault.com/questions/694179/why-c-app-is-not-writing-to-nohup-out
 
 
-As @greg pointed out, nohup.out was buffered. Setting buffer size of stdout to null solved it.
+>As @greg pointed out, nohup.out was buffered. Setting buffer size of stdout to null solved it.
+>
+>`setbuf(stdout, NULL);`
 
-`setbuf(stdout, NULL);`
+
+
+extend reading
+==============
+
+SIGHUP is not being sent on exit
+--------------------------------
+
+https://askubuntu.com/questions/705446/sighup-is-not-being-sent-on-exit
+
+>It is a documented behavior, from `man bash`:
+>
+>> If the huponexit shell option has been set with shopt, bash sends a SIGHUP to all jobs when an **interactive login** shell exits.
+>
+>The important words are "interactive" and "login".
+>
+>When you open a terminal with Ctrl + Alt + T, you are initiating an **interactive**, **non-login** instance of shell, so `huponexit` won't work as expected.
+>
+>On the other hand, while opening an TTY with e.g. Ctrl + Alt + F1, you are initiating an **interactive**, **login** session of `bash`, so `huponexit` will work in this case.
+>
+>On a different note, when you press the `X` button on terminal to close it, the terminal driver in the kernel sends `SIGHUP` to the shell, which in turn sends `SIGHUP` to all its jobs, more technically all of the foreground and background process groups of the session.  
+
+
+
+
+
+When did bash's shopt huponexit start defaulting to off
+-------------------------------------------------------
+
+https://unix.stackexchange.com/questions/284470/when-did-bashs-shopt-huponexit-start-defaulting-to-off
+
+It defaulted to off when it was introduced, in bash 2.02:
+
+    @@ -119,6 +123,10 @@ int interactive = 0;
+     /* Non-zero means that the shell was started as an interactive shell. */
+     int interactive_shell = 0;
+    
+    +/* Non-zero means to send a SIGHUP to all jobs when an interactive login
+    +   shell exits. */
+    +int hup_on_exit = 0;
+    +
+
+[http://git.savannah.gnu.org/cgit/bash.git/commit/shell.c?id=cce855bc5b117cb7ae70064131120687bc69fac0](http://git.savannah.gnu.org/cgit/bash.git/commit/shell.c?id=cce855bc5b117cb7ae70064131120687bc69fac0)
+
+
+
+
+No hangup signal by default
+---------------------------
+
+https://serverfault.com/questions/625264/no-hangup-signal-by-default
+
+>Ubuntu processes handle signals the same way that other Linux distributions and Unices do. When an SSH session disconnects, a SIGHUP signal is sent to the [session leader process](http://www.win.tue.nl/~aeb/linux/lk/lk-10.html#ss10.3), which would probably be `bash`.
+>
+>Bash, in turn, [cleans up after itself](https://www.gnu.org/software/bash/manual/html_node/Signals.html#Signals):
+>
+>> The shell exits by default upon receipt of a `SIGHUP`. Before exiting, an interactive shell resends the `SIGHUP` to all jobs, running or stopped. Stopped jobs are sent `SIGCONT` to ensure that they receive the `SIGHUP`. To prevent the shell from sending the `SIGHUP` signal to a particular job, it should be removed from the jobs table with the disown builtin (see [Job Control Builtins](https://www.gnu.org/software/bash/manual/html_node/Job-Control-Builtins.html#Job-Control-Builtins)) or marked to not receive `SIGHUP` using `disown -h`.
+>> 
+>> If the `huponexit` shell option has been set with `shopt` (see [The Shopt Builtin](https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html#The-Shopt-Builtin)), Bash sends a `SIGHUP` to all jobs when an interactive login shell exits.
+>
+>`disown` is a Bash built-in command. `nohup` is an external command with similar effect.
+>
+>I don't recommend reconfiguring Bash to not kill all of its child processes (nor do I know how to do that). Rather, a better goal would be to prevent Bash from dying when its TTY disappears. You can use `screen`, `tmux`, or `mosh` to keep Bash alive.
+
+
+
+Setting shell options
+---------------------
+
+https://bash.cyberciti.biz/guide/Setting_shell_options
+
+Type the following command:  
+
+------------------------------
+
+set -o
+
+Sample outputs:
+
+allexport      	off
+braceexpand    	on
+emacs          	on
+errexit        	off
+errtrace       	off
+functrace      	off
+hashall        	on
+histexpand     	on
+history        	on
+ignoreeof      	off
+interactive-comments	on
+keyword        	off
+monitor        	on
+noclobber      	off
+noexec         	off
+noglob         	off
+nolog          	off
+notify         	off
+nounset        	off
+onecmd         	off
+physical       	off
+pipefail       	off
+posix          	off
+privileged     	off
+verbose        	off
+vi             	off
+xtrace         	off
+
+*   See [set command](https://bash.cyberciti.biz/guide/Set_command "Set command") for detailed explanation of each variable.
+
+### How do I set and unset shell variable options?
+
+To set shell variable option use the following syntax:
+
+set -o variableName
+
+To unset shell variable option use the following syntax:
+
+set +o variableName
+
+#### Examples
+
+Disable <CTRL-d> which is used to logout of a [login shell](https://bash.cyberciti.biz/guide/Login_shell "Login shell") (local or remote login session over ssh).
+
+set -o ignoreeof
+
+Now, try pressing \[CTRL-d\] Sample outputs:
+
+Use "exit" to leave the shell.
+
+Turn it off, enter:
+
+set +o ignoreeof
+
+shopt command
+-------------
+
+You can turn on or off the values of variables controlling optional behavior using the [shopt command](https://bash.cyberciti.biz/guide/Shopt_command "Shopt command"). To view a list of some of the currently configured option via shopt, enter:
+
+shopt
+shopt -p
+
+Sample outputs:
+
+cdable_vars    	off
+cdspell        	off
+checkhash      	off
+checkwinsize   	on
+cmdhist        	on
+compat31       	off
+dotglob        	off
+execfail       	off
+expand_aliases 	on
+extdebug       	off
+extglob        	off
+extquote       	on
+failglob       	off
+force_fignore  	on
+gnu_errfmt     	off
+histappend     	off
+histreedit     	off
+histverify     	off
+hostcomplete   	on
+huponexit      	off
+interactive_comments	on
+lithist        	off
+login_shell    	off
+mailwarn       	off
+no\_empty\_cmd_completion	off
+nocaseglob     	off
+nocasematch    	off
+nullglob       	off
+progcomp       	on
+promptvars     	on
+restricted_shell	off
+shift_verbose  	off
+sourcepath     	on
+xpg_echo       	off
+
+### How do I enable (set) and disable (unset) each option?
+
+To enable (set) each option, enter:
+
+shopt -s optionName
+
+To disable (unset) each option, enter:
+
+shopt -u optionName
+
+
 
 
 
