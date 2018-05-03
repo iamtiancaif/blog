@@ -84,17 +84,13 @@ AOP编程其实是很简单的事情，纵观AOP编程，程序员只需要参�
 
 下面给出一个Spring AOP的.xml文件模板，名字叫做aop.xml，之后的内容都在aop.xml上进行扩展：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+	</beans>
 
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
-         
-</beans>
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
 
 基于Spring的AOP简单实现
 ----------------
@@ -107,112 +103,93 @@ AOP编程其实是很简单的事情，纵观AOP编程，程序员只需要参�
 
 开始讲解用Spring AOP的XML实现方式，先定义一个接口：
 
-public interface HelloWorld
-{ void printHelloWorld(); void doPrint();
-}
+	public interface HelloWorld
+	{
+		void printHelloWorld(); 
+		void doPrint();
+	}
 
 定义两个接口实现类：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	public class HelloWorldImpl1 implements HelloWorld {
+		public void printHelloWorld()  {
+			System.out.println("Enter HelloWorldImpl1.printHelloWorld()");
+		}
+		
+		public void doPrint() {
+			System.out.println("Enter HelloWorldImpl1.doPrint()");
+			return ;
+		}
+	}
 
-public class HelloWorldImpl1 implements HelloWorld
-{ public void printHelloWorld()
-    {
-        System.out.println("Enter HelloWorldImpl1.printHelloWorld()");
-    } public void doPrint()
-    {
-        System.out.println("Enter HelloWorldImpl1.doPrint()"); return ;
-    }
-}
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	public class HelloWorldImpl2 implements HelloWorld {
+		public void printHelloWorld()  {
+			System.out.println("Enter HelloWorldImpl2.printHelloWorld()");
+		}
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+		public void doPrint() {
+			System.out.println("Enter HelloWorldImpl2.doPrint()"); return ;
+		}
+	}
 
-public class HelloWorldImpl2 implements HelloWorld
-{ public void printHelloWorld()
-    {
-        System.out.println("Enter HelloWorldImpl2.printHelloWorld()");
-    } public void doPrint()
-    {
-        System.out.println("Enter HelloWorldImpl2.doPrint()"); return ;
-    }
-}
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
 
 横切关注点，这里是打印时间：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	public class TimeHandler{ 
+		public void printTime() {
+			System.out.println("CurrentTime = " + System.currentTimeMillis());
+		}
+	}
 
-public class TimeHandler
-{ public void printTime()
-    {
-        System.out.println("CurrentTime = " + System.currentTimeMillis());
-    }
-}
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
 
 有这三个类就可以实现一个简单的Spring AOP了，看一下aop.xml的配置：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
-
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
-     
-        <bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
-        <bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
-        <bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
-     
-        <aop:config>
-            <aop:aspect id="time" ref="timeHandler">
-                <aop:pointcut id="addAllMethod" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
-                <aop:before method="printTime" pointcut-ref="addAllMethod" />
-                <aop:after method="printTime" pointcut-ref="addAllMethod" />
-            </aop:aspect>
-        </aop:config>
-</beans>
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+	     
+		<bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
+		<bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
+		<bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
+	     
+		<aop:config>
+		    <aop:aspect id="time" ref="timeHandler">
+			<aop:pointcut id="addAllMethod" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
+			<aop:before method="printTime" pointcut-ref="addAllMethod" />
+			<aop:after method="printTime" pointcut-ref="addAllMethod" />
+		    </aop:aspect>
+		</aop:config>
+	</beans>
 
 写一个main函数调用一下：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
-
-public static void main(String\[\] args)
-{
-    ApplicationContext ctx =
-            new ClassPathXmlApplicationContext("aop.xml");
-     
-    HelloWorld hw1 = (HelloWorld)ctx.getBean("helloWorldImpl1");
-    HelloWorld hw2 = (HelloWorld)ctx.getBean("helloWorldImpl2");
-    hw1.printHelloWorld();
-    System.out.println();
-    hw1.doPrint();
- 
-    System.out.println();
-    hw2.printHelloWorld();
-    System.out.println();
-    hw2.doPrint();
-}
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	public static void main(String\[\] args)
+	{
+	    ApplicationContext ctx =
+		    new ClassPathXmlApplicationContext("aop.xml");
+	     
+	    HelloWorld hw1 = (HelloWorld)ctx.getBean("helloWorldImpl1");
+	    HelloWorld hw2 = (HelloWorld)ctx.getBean("helloWorldImpl2");
+	    hw1.printHelloWorld();
+	    System.out.println();
+	    hw1.doPrint();
+	 
+	    System.out.println();
+	    hw2.printHelloWorld();
+	    System.out.println();
+	    hw2.doPrint();
+	}
 
 运行结果为：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
-
-CurrentTime = 1446129611993 Enter HelloWorldImpl1.printHelloWorld()
-CurrentTime = 1446129611993 CurrentTime = 1446129611994 Enter HelloWorldImpl1.doPrint()
-CurrentTime = 1446129611994 CurrentTime = 1446129611994 Enter HelloWorldImpl2.printHelloWorld()
-CurrentTime = 1446129611994 CurrentTime = 1446129611994 Enter HelloWorldImpl2.doPrint()
-CurrentTime = 1446129611994
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	CurrentTime = 1446129611993 Enter HelloWorldImpl1.printHelloWorld()
+	CurrentTime = 1446129611993 CurrentTime = 1446129611994 Enter HelloWorldImpl1.doPrint()
+	CurrentTime = 1446129611994 CurrentTime = 1446129611994 Enter HelloWorldImpl2.printHelloWorld()
+	CurrentTime = 1446129611994 CurrentTime = 1446129611994 Enter HelloWorldImpl2.doPrint()
+	CurrentTime = 1446129611994
 
 看到给HelloWorld接口的两个实现类的所有方法都加上了代理，代理内容就是打印时间
 
@@ -222,78 +199,68 @@ CurrentTime = 1446129611994
 1、增加一个横切关注点，打印日志，Java类为：
 ------------------------
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	public class LogHandler {
+		public void LogBefore() {
+			System.out.println("Log before method");
+		} 
 
-public class LogHandler
-{ public void LogBefore()
-    {
-        System.out.println("Log before method");
-    } public void LogAfter()
-    {
-        System.out.println("Log after method");
-    }
-}
+		public void LogAfter() {
+			System.out.println("Log after method");
+		}
+	}
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+<hr/>
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
-
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
-     
-        <bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
-        <bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
-        <bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
-        <bean id="logHandler" class="com.xrq.aop.LogHandler" />
-     
-        <aop:config>
-            <aop:aspect id="time" ref="timeHandler" order="1">
-                <aop:pointcut id="addTime" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
-                <aop:before method="printTime" pointcut-ref="addTime" />
-                <aop:after method="printTime" pointcut-ref="addTime" />
-            </aop:aspect>
-            <aop:aspect id="log" ref="logHandler" order="2">
-                <aop:pointcut id="printLog" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
-                <aop:before method="LogBefore" pointcut-ref="printLog" />
-                <aop:after method="LogAfter" pointcut-ref="printLog" />
-            </aop:aspect>
-        </aop:config>
-</beans>
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+	     
+		<bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
+		<bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
+		<bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
+		<bean id="logHandler" class="com.xrq.aop.LogHandler" />
+	     
+		<aop:config>
+		    <aop:aspect id="time" ref="timeHandler" order="1">
+			<aop:pointcut id="addTime" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
+			<aop:before method="printTime" pointcut-ref="addTime" />
+			<aop:after method="printTime" pointcut-ref="addTime" />
+		    </aop:aspect>
+		    <aop:aspect id="log" ref="logHandler" order="2">
+			<aop:pointcut id="printLog" expression="execution(* com.xrq.aop.HelloWorld.*(..))" />
+			<aop:before method="LogBefore" pointcut-ref="printLog" />
+			<aop:after method="LogAfter" pointcut-ref="printLog" />
+		    </aop:aspect>
+		</aop:config>
+	</beans>
 
 测试类不变，打印结果为：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	CurrentTime = 1446130273734
+	Log before method
+	Enter HelloWorldImpl1.printHelloWorld()
+	Log after method
+	CurrentTime = 1446130273735
 
-CurrentTime = 1446130273734
-Log before method
-Enter HelloWorldImpl1.printHelloWorld()
-Log after method
-CurrentTime = 1446130273735
+	CurrentTime = 1446130273736
+	Log before method
+	Enter HelloWorldImpl1.doPrint()
+	Log after method
+	CurrentTime = 1446130273736
 
-CurrentTime = 1446130273736
-Log before method
-Enter HelloWorldImpl1.doPrint()
-Log after method
-CurrentTime = 1446130273736
+	CurrentTime = 1446130273736
+	Log before method
+	Enter HelloWorldImpl2.printHelloWorld()
+	Log after method
+	CurrentTime = 1446130273736
 
-CurrentTime = 1446130273736
-Log before method
-Enter HelloWorldImpl2.printHelloWorld()
-Log after method
-CurrentTime = 1446130273736
-
-CurrentTime = 1446130273737
-Log before method
-Enter HelloWorldImpl2.doPrint()
-Log after method
-CurrentTime = 1446130273737
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	CurrentTime = 1446130273737
+	Log before method
+	Enter HelloWorldImpl2.doPrint()
+	Log after method
+	CurrentTime = 1446130273737
 
 要想让logHandler在timeHandler前使用有两个办法：
 
@@ -306,34 +273,30 @@ CurrentTime = 1446130273737
 
 修改一下pointcut的expression就好了：
 
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
-
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
-     
-        <bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
-        <bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
-        <bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
-        <bean id="logHandler" class="com.xrq.aop.LogHandler" />
-     
-        <aop:config>
-            <aop:aspect id="time" ref="timeHandler" order="1">
-                <aop:pointcut id="addTime" expression="execution(* com.xrq.aop.HelloWorld.print*(..))" />
-                <aop:before method="printTime" pointcut-ref="addTime" />
-                <aop:after method="printTime" pointcut-ref="addTime" />
-            </aop:aspect>
-            <aop:aspect id="log" ref="logHandler" order="2">
-                <aop:pointcut id="printLog" expression="execution(* com.xrq.aop.HelloWorld.do*(..))" />
-                <aop:before method="LogBefore" pointcut-ref="printLog" />
-                <aop:after method="LogAfter" pointcut-ref="printLog" />
-            </aop:aspect>
-        </aop:config>
-</beans>
-
-![复制代码](data:image;base64,R0lGODlhFAAUANQHADJKYpKluc3P05qy4jJdta/M92KQ3vv8/nKi4rK/0rLC6mJ6mtHe7sHN4ZW19iJLmUp2wqKy0nKa8iJCgsLV9uLq8qKywnKa2oKy4lKC0qLC8qKqwnKS0oKn7cDI1AAAACH5BAEAAB8ALAAAAAAUABQAAAWE4CeOZGmeaKquLKkoSRwJrXLch7XQa4IfAc+ud6AUGIHCS+NwME6WX6Xw6xAaps2BiUFofpICwVMK3CoVxuDQZBgIhEf50EVc1rgKJSInmRkMDQ0dBx0IBhkZfGUAjY0cOAwUChZ9KQYHiIkZG5YoEAcRohYbAZ4nEHAPq6sTLa+wsSUhADsA)
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+	     
+		<bean id="helloWorldImpl1" class="com.xrq.aop.HelloWorldImpl1" />
+		<bean id="helloWorldImpl2" class="com.xrq.aop.HelloWorldImpl2" />
+		<bean id="timeHandler" class="com.xrq.aop.TimeHandler" />
+		<bean id="logHandler" class="com.xrq.aop.LogHandler" />
+	     
+		<aop:config>
+		    <aop:aspect id="time" ref="timeHandler" order="1">
+			<aop:pointcut id="addTime" expression="execution(* com.xrq.aop.HelloWorld.print*(..))" />
+			<aop:before method="printTime" pointcut-ref="addTime" />
+			<aop:after method="printTime" pointcut-ref="addTime" />
+		    </aop:aspect>
+		    <aop:aspect id="log" ref="logHandler" order="2">
+			<aop:pointcut id="printLog" expression="execution(* com.xrq.aop.HelloWorld.do*(..))" />
+			<aop:before method="LogBefore" pointcut-ref="printLog" />
+			<aop:after method="LogAfter" pointcut-ref="printLog" />
+		    </aop:aspect>
+		</aop:config>
+	</beans>
 
 表示timeHandler只会织入HelloWorld接口print开头的方法，logHandler只会织入HelloWorld接口do开头的方法
 
