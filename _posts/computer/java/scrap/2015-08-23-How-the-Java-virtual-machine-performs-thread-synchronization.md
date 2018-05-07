@@ -2,9 +2,9 @@
 layout: post
 title:  "How the Java virtual machine performs thread synchronization"
 categories: computer
-tags:  computer copy JavaWorld java jvm concurrent
-author: By Bill Venners
-source: https://www.javaworld.com/article/2076971/java-concurrency/how-the-java-virtual-machine-performs-thread-synchronization.html
+tags:  computer copy JavaWorld java jvm concurrency
+author: "Bill Venners"
+source: "https://www.javaworld.com/article/2076971/java-concurrency/how-the-java-virtual-machine-performs-thread-synchronization.html"
 ---
 
 * content
