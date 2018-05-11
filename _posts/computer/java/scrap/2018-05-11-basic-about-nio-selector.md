@@ -47,6 +47,7 @@ Buffer和Channel在[深入浅出NIO之Channel、Buffer](https://www.jianshu.com/
 这个很好理解，每次请求到达服务器，都是从connect开始，connect成功后，服务端开始准备accept，准备就绪，开始读数据，并处理，最后写回数据返回。
 
 所以，当SocketChannel有对应的事件发生时，Selector都可以观察到，并进行相应的处理。
+<!--more-->
 
 ### 服务端代码
 
