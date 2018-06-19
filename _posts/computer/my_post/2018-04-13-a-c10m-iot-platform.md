@@ -2,7 +2,7 @@
 layout: post
 title:  "a c10m iot platform"
 categories: computer
-tags:  computer linux java jixianzhao
+tags:  computer linux java jixianzhao question
 author: JiXianzhao
 ---
 
