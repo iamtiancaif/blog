@@ -64,5 +64,9 @@ collections:
     important:
         output: true
         permalink: /:year-:month-:day-:title
-
+default:
+    scope:
+        path: "image"
+        values:
+        image: true
 
