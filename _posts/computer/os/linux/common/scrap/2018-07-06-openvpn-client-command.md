@@ -12,4 +12,5 @@ source: "https://askubuntu.com/questions/509586/openvpn-the-vpn-connection-to-be
 
 	openvpn --config nameofyourconfigfile.conf  
 
+as root from the terminal  
 
