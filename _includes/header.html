@@ -14,6 +14,10 @@
                         <i class="fa fa-home"></i>Home
                     </a>
                 </li>
+                <li>
+                    <!--检索框-->
+                    {% include searchbar.html %}
+                </li>
 
                 {% for my_page in site.pages %}
                     {% if my_page.type == 'page' %}
