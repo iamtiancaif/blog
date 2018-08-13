@@ -7,28 +7,7 @@
 
     {% include header.html %}
 
-    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
-         content to avoid any CSS collisions with our real content. -->
-        <div class="masthead">
-            <div class="container">
-                <img src="/public/img/logo.png" class="masthead-img masthead-inner masthead-shrink"/>
-                <h3 class="masthead-title masthead-inner masthead-shrink" >
-                    {% if page.url contains 'category' %}
-                    <a href="{{page.url}}" title="Home">{{ page.cn }}</a>
-                    <small class="font-kt">分类文章</small>
-                    {% elsif page.url contains 'tag' %}
-                    <a href="{{ page.url }}" title="Home">{{ page.cn }}</a>
-                    <small>按标签分类</small>
-                    {% else %}
-                    <a href="{{ site.baseurl }}/" title="Home">{{ site.title }}</a>
-                    <small class="font-kt">{{ site.tagline }}</small>
-                    {% endif %}
-                </h3>
-                <div class="masthead-nav masthead-inner">
-                    {% include navbar.html %}
-                </div>
-            </div>
-        </div>
+    
 
         {{ content }}
 
