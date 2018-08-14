@@ -7,12 +7,14 @@
 
     {% include header.html %}
 
+    
+
         {{ content }}
 
     {% include footer.html %}
     {% include backToTop.html %}
-    <script src="{{ " /js/main.js " | prepend: site.baseurl }}" charset="utf-8"></script>
-    <script src="{{ " /js/smooth-scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+    <script src="{{ "/public/js/main.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+    <script src="{{ "/public/js/smooth-scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script>
     <script type="text/javascript">
       smoothScroll.init({
         speed: 500, // Integer. How fast to complete the scroll in milliseconds
@@ -20,7 +22,47 @@
         offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
       });
     </script>
-    <!-- <script src="{{ " /js/scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script> -->
+    <!-- <script src="{{ " /public/js/scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script> -->
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+        (function(document) {
+            var toggle = document.querySelector('.sidebar-toggle');
+            var sidebar = document.querySelector('#sidebar');
+            var checkbox = document.querySelector('#sidebar-checkbox');
+
+            document.addEventListener('click', function(e) {
+                var target = e.target;
+                if(!checkbox.checked ||
+                    sidebar.contains(target) ||
+                    (target === checkbox || target === toggle)) return;
+
+                checkbox.checked = false;
+            }, false);
+
+            var article = document.getElementById('articles');
+            var isExpanded = article.getAttribute('expanded');
+            var categoryName = document.getElementsByName('category-name');
+            article.addEventListener('click', function(e) {
+                if(isExpanded){
+                    isExpanded = false;
+                    for (var i=0;i<categoryName.length;i++){
+                        categoryName[i].setAttribute('class','sidebar-nav-item category-name-hide');
+                    }
+                }else{
+                    isExpanded = true;
+                    for (var i=0;i<categoryName.length;i++){
+                        categoryName[i].setAttribute('class','sidebar-nav-item category-name-show');
+                    }
+                }
+            }, false);
+        })(document);
+        $('#search-btn').on('click',function(){
+            $('#search-bar').submit();
+        });
+    </script>
+    <script src="{{ site.baseurl }}/public/js/typeahead-custom.js"></script>
   </body>
 
 </html>
