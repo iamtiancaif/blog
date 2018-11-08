@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "java technology selection for siov"
+title: "java technology selection for siov"
 categories: computer
-tags:  computer java
+tags: computer java
 author: Jixianzhao
 ---
 
