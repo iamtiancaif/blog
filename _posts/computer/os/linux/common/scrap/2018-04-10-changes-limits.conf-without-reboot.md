@@ -1,7 +1,6 @@
-changes limits.conf without reboot
 ---
 layout: post
-title:  "convert HashMap to JsonNode with Jackson"
+title:  "changes limits.conf without reboot"
 categories: computer
 tags:  computer copy stackexchange linux
 author: "web"
