@@ -1,4 +1,4 @@
-i---
+---
 layout: post
 title: "updating MySQL primary key"
 categories: computer
