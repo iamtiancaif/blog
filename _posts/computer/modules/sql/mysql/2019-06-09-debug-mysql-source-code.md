@@ -20,7 +20,7 @@ linux kernel 4.19.0-0.bpo.4-amd64
 
 ## prepare
 
-I don't know if this neccesary. caused by "collect2: fatal error: cannot find 'ld'".  
+I don't know if this is neccesary. caused by "collect2: fatal error: cannot find 'ld'".  
 
 	sudo apt-get install build-essential  
 
@@ -104,6 +104,19 @@ datadir=/data/debug/mysql5/data
 
 	./mysqld_safe --skip-grant-tables --socket=/data/debug/mysql5/mysql.sock
 
+\# change the privilege  
+
+	update mysql.user set plugin=’mysql_native_password’;  
+
+\# stop the server  
+
+	./mysqladmin -u root shutdown -p  
+
+\# start server normaly  
+
+	./mysqld --defaults-file=/data/debug/mysql5/etc/my.cnf
+
+\# if u wanna debug, run from clion.  
 
 # config
 
