@@ -502,11 +502,11 @@ Bye
 source: [link](https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql)
 
 >
-mysql> CREATE USER 'tomato'@'localhost' IDENTIFIED BY '123456';
+mysql> CREATE USER \'tomato\'@\'localhost\' IDENTIFIED BY \'123456\';
 >
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'tomato'@'localhost';
+mysql> GRANT ALL PRIVILEGES ON \*.\* TO \'tomato\'@\'localhost\';
 >
-FLUSH PRIVILEGES;
+mysql> FLUSH PRIVILEGES;
 
 
 
