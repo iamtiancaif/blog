@@ -117,7 +117,7 @@ spring-cloud-eukera / spring-cloud-zookeeper / spring-cloud-consul / spring-clou
 | -- | -- | -- | -- |
 | 可用性、可靠性、稳定性 | 优 | 良 | 优 |
 | 并发、吞吐量 | 较高 | 高 | 较高|
-| 持久化 | 支持 | 不支持 | 支持|
+| 持久化 | 支持 | 支持 | 支持|
 | 技术成熟度 | 成熟 | 一般 | 成熟 |
 
 #### 确定方案为 rabbitMQ
