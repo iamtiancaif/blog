@@ -21,7 +21,7 @@ type: page
 ## 联系我
 
 * GitHub：[Jixianzhao](https://github.com/jixianzhao)
-* email：276161119@qq.com
+* email：jixianzhao@foxmail.com
 * email：jixianzhao3@gmail.com
 * [知乎](https://www.zhihu.com/people/joseph_kei)
 * [Twitter](https://twitter.com/joseph__kei)
